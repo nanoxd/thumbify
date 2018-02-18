@@ -46,7 +46,7 @@ main!(|args: Cli, log_level: verbosity| {
         args.thumb_dir
     );
 
-    let thumbnails = files.iter().map(|f| {
+    let thumbnails = files.par_iter().map(|f| {
         make_thumbnail(f, &args.thumb_dir, args.size)
             .map_err(|e| error!("Failed to resize {} ({})", f.display(), e))
     });
