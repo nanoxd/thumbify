@@ -52,5 +52,13 @@ fn main() {
             make_thumbnail(f, &args.thumb_dir, args.size)
                 .map_err(|e| error!("Failed to resize {} ({})", f.display(), e))
         });
+
+        let thumbnail_count: i32 = thumbnails.map(|x| if x.is_ok() { 1 } else { 0 }).sum();
+
+        println!(
+            "{} of {} files successfully thumbified",
+            thumbnail_count,
+            files.len()
+        );
     });
 }
