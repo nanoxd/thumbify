@@ -39,11 +39,18 @@ fn main() {
     println!("Hello, world!");
     main!(|args: Cli, log_level: verbosity| {
         let files = glob(&args.pattern)?;
+
         create_dir(&args.thumb_dir)?;
+
         info!(
             "Saving {} thumbnails into {:?}...",
             files.len(),
             args.thumb_dir
         );
+
+        let thumbnails = files.iter().map(|f| {
+            make_thumbnail(f, &args.thumb_dir, args.size)
+                .map_err(|e| error!("Failed to resize {} ({})", f.display(), e))
+        });
     });
 }
