@@ -35,30 +35,27 @@ fn make_thumbnail(original: &Path, thumb_dir: &str, longest_edge: u32) -> Result
     Ok(())
 }
 
-fn main() {
-    println!("Hello, world!");
-    main!(|args: Cli, log_level: verbosity| {
-        let files = glob(&args.pattern)?;
+main!(|args: Cli, log_level: verbosity| {
+    let files = glob(&args.pattern)?;
 
-        create_dir(&args.thumb_dir)?;
+    create_dir(&args.thumb_dir)?;
 
-        info!(
-            "Saving {} thumbnails into {:?}...",
-            files.len(),
-            args.thumb_dir
-        );
+    info!(
+        "Saving {} thumbnails into {:?}...",
+        files.len(),
+        args.thumb_dir
+    );
 
-        let thumbnails = files.iter().map(|f| {
-            make_thumbnail(f, &args.thumb_dir, args.size)
-                .map_err(|e| error!("Failed to resize {} ({})", f.display(), e))
-        });
-
-        let thumbnail_count: i32 = thumbnails.map(|x| if x.is_ok() { 1 } else { 0 }).sum();
-
-        println!(
-            "{} of {} files successfully thumbified",
-            thumbnail_count,
-            files.len()
-        );
+    let thumbnails = files.iter().map(|f| {
+        make_thumbnail(f, &args.thumb_dir, args.size)
+            .map_err(|e| error!("Failed to resize {} ({})", f.display(), e))
     });
-}
+
+    let thumbnail_count: i32 = thumbnails.map(|x| if x.is_ok() { 1 } else { 0 }).sum();
+
+    println!(
+        "{} of {} files successfully thumbified",
+        thumbnail_count,
+        files.len()
+    );
+});
